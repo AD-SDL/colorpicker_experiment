@@ -1,0 +1,15 @@
+[project]
+name = "colorpicker_experiment"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Ryan D. Lewis", email = "ryan.lewis@anl.gov"},
+]
+dependencies = ["pre-commit>=4.1.0", "madsci-client>=0.1.0"]
+requires-python = ">=3.9.1"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
