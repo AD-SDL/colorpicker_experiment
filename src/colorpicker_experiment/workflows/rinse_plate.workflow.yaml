@@ -1,0 +1,45 @@
+name: Color Picker - Clean Up - Workflow
+
+metadata:
+  author: Tobias Ginsburg, Rafael Vescovi
+  info: New Plate workflow for the RPL Color Picker
+  version: 0.1
+
+parameters: 
+  - "name": wells
+
+steps:
+  - name: Color Plate to OT2
+    node: pf400
+    action: transfer
+    args:
+      source_plate_rotation: "narrow"
+      target_plate_rotation: "wide"
+    locations:
+      source: camera_station
+      target: ot2_gamma_deck_2
+    comments: Move initial color plate from camera station to ot2
+  - name: Run Ot2
+    node: ot2_gamma
+    action: run_protocol
+    args:
+      parameters: 
+        wells: $wells
+    files:
+      protocol: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/protocols/rinse_plate.py
+    comments: run ot2 protocol
+  - name: Color Plate to Sciclops exchange
+    node: pf400
+    action: transfer
+    args:
+      source_plate_rotation: "wide"
+      target_plate_rotation: "narrow"
+    locations:
+      source: ot2_gamma_deck_2
+      target: exchange
+  - name: Color Plate back to tower 1
+    node: sciclops
+    action: return_plate
+    locations:
+      source: exchange
+      target: tower1

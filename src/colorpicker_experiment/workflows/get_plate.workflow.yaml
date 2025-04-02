@@ -1,0 +1,23 @@
+name: Color Picker - New Plate - Workflow
+
+metadata:
+  author: Tobias Ginsburg, Rafael Vescovi
+  info: New Plate workflow for the RPL Color Picker
+  version: 0.1
+
+steps:
+  - name: Color Plate to Plate Exchange
+    node: sciclops
+    action: get_plate
+    locations:
+      source: tower1
+      target: exchange
+    comments: Move initial color plate from sciclops to plate exchange
+  
+  - name: Color Plate to Trash
+    node: pf400
+    action: transfer
+    locations:
+      source: exchange
+      target: camera_station
+    comments: Move initial color plate from plate exchange to camera station
