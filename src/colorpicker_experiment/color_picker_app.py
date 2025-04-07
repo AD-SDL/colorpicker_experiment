@@ -10,13 +10,8 @@ from bayes_solver import BayesColorSolver
 class ColorPickerExperimentApplication(ExperimentApplication):
         """An example experiment application."""
         workflow_directory = Path("./workflows")
-        experiment_design = ExperimentDesign(
-            experiment_name="My Example Experiment",
-            experiment_description="An example experimental design",
-        )
+        experiment_design = Path("./experiment_design.yaml")
         url = "http://parker.cels.anl.gov:8002"
-        data_client = DataClient("http://parker.cels.anl.gov:8004")
-        
         wells = []
         for i in range(0, 9):
             for j in range(1, 13):
@@ -65,5 +60,6 @@ with experiment_app.manage_experiment(
         run_name=f"Color Picker Experiment Run {current_time}",
         run_description=f"Run for color picker experiment, started at ~{current_time}",
     ):
-      experiment_app.loop(1)
-      experiment_app.clean_up()
+      print("test")
+#      experiment_app.loop(1)
+ #     experiment_app.clean_up()
