@@ -1,12 +1,13 @@
+from typing import TYPE_CHECKING, Callable, Dict, List, Tuple
+
+import cv2
+import numpy as np
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
+
+
 def get_colors_from_file(img_path, offset=None):
-    from typing import TYPE_CHECKING, Callable, Dict, List, Tuple
-
-    import cv2
-    import numpy as np
-
-    if TYPE_CHECKING:
-        import numpy.typing as npt
-
     def _to_homogeneous(pts: "npt.NDArray[np.int64]") -> "npt.NDArray[np.float64]":
         *front, d = pts.shape
         points = np.ones((*front, d + 1))
@@ -53,7 +54,9 @@ def get_colors_from_file(img_path, offset=None):
         """Finds the corners in image coordinate space of the largest fiducial."""
         # Find all of the fiducials
         corners, ids = _find_fiducials(img)
-        assert corners, "Fiducial not found. Check if the ArUco tag is in the image and not mirrored."
+        assert corners, (
+            "Fiducial not found. Check if the ArUco tag is in the image and not mirrored."
+        )
 
         corners = np.concatenate(corners, axis=0)
 
@@ -448,8 +451,8 @@ def get_colors_from_file(img_path, offset=None):
     )  # Analyze image for colors
 
     base_path = img_path.parent
-    cv2.imwrite(str(base_path / "plate_img.jpg"), plate_img)
-    cv2.imwrite(str(base_path / "plate_only.jpg"), plate_only)
+    cv2.imwrite(str(base_path / "plate_localized.jpg"), plate_img)
+    cv2.imwrite(str(base_path / "plate_cropped.jpg"), plate_only)
     cv2.imwrite(str(base_path / "plate_colors.jpg"), plate_colors)
     ##save side images
     return platesD[1]

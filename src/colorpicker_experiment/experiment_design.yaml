@@ -2,22 +2,20 @@
 experiment_name: Color Picker
 experiment_description: The Color Mixing Experiment of RPL!
 resource_conditions:
+ - condition_type: resource_present
+   location_name: tower1
 
-  - condition_type: resource_present
-    location_name: tower1
+ - condition_type: no_resource_present
+   location_name: camera_station
 
-  - condition_type: no_resource_present
-    location_name: camera_station
+ - condition_type: resource_field_check
+   resource_name: ot2_gamma_deck10
+   field: quantity
+   operator: is_greater_than_or_equal_to
+   target_value: 1
 
-  - condition_type: resource_field_check
-    resource_name: ot2_gamma_deck10
-    field: quantity
-    operator: is_greater_than_or_equal_to
-    target_value: 1
-
-  - condition_type: resource_child_field_check
-    resource_name: ot2_gamma_deck10
-    field: resource_type
-    operator: is_equal_to
-    target_value: tip_box
-    
+#  - condition_type: resource_child_field_check
+#    resource_name: ot2_gamma_deck10
+#    field: resource_type
+#    operator: is_equal_to
+#    target_value: tip_box

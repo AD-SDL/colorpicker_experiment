@@ -1,6 +1,5 @@
-from typing import List, Tuple, Any, Optional, Union
+from typing import List, Optional, Union
 
-from pydantic import BaseModel
 
 import numpy as np
 
@@ -9,7 +8,6 @@ import numpy as np
 from colormath.color_objects import sRGBColor
 from skopt import Optimizer
 from colormath.color_conversions import convert_color
-
 
 
 class BayesColorSolver:
@@ -24,6 +22,7 @@ class BayesColorSolver:
         )
         self.pop_size = pop_size
         self.target_color = target_color
+
     def _augment(
         self,
         prev_pop: List[sRGBColor],
@@ -33,11 +32,11 @@ class BayesColorSolver:
         new_pop = self.optimizer.ask(self.pop_size)
         new_pop = [(x / np.sum(x)).round(3).tolist() for x in new_pop]
         return new_pop
-    
+
     def run_iteration(
         self,
         previous_ratios: Optional[List[List[float]]] = None,
-        prev_colors: Optional[List[List[float]]] = None
+        prev_colors: Optional[List[List[float]]] = None,
     ) -> List[List[float]]:
         if previous_ratios is None:
             ratios = []
@@ -55,7 +54,7 @@ class BayesColorSolver:
 
         # Convert to volumes
         return new_population
-    
+
     @staticmethod
     def _grade_population(
         cls,
@@ -79,7 +78,7 @@ class BayesColorSolver:
             diffs.append(diff)
 
         return diffs
-    
+
     @staticmethod
     def _color_diff(
         color1_rgb: Union[sRGBColor, List[float]],
@@ -98,6 +97,3 @@ class BayesColorSolver:
         color2_lab = convert_color(color2_rgb, LabColor)
         delta_e = delta_e_cie2000(color1_lab, color2_lab)
         return delta_e
-
-
-

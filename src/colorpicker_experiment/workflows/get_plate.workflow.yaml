@@ -1,4 +1,4 @@
-name: Color Picker - New Plate - Workflow
+name: New Plate Workflow
 
 metadata:
   author: Tobias Ginsburg, Rafael Vescovi
@@ -13,7 +13,7 @@ steps:
       source: tower1
       target: exchange
     comments: Move initial color plate from sciclops to plate exchange
-  
+
   - name: Color Plate to Trash
     node: pf400
     action: transfer
