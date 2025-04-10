@@ -11,7 +11,7 @@ parameters:
   - "name": protocol_path
 
 steps:
-  - name: Color Plate to OT2
+  - name: Color Plate from Camera Station -> OT2 Deck
     node: pf400
     action: transfer
     args:
@@ -20,8 +20,8 @@ steps:
     locations:
       source: camera_station
       target: ot2_gamma_deck_2
-    comments: Move initial color plate from camera station to ot2
-  - name: Run Ot2
+
+  - name: Run OT2 Color Mixing Protocol
     node: ot2_gamma
     action: run_protocol
     args:
@@ -30,8 +30,8 @@ steps:
         amounts: $amounts
     files:
       protocol: $protocol_path
-    comments: run ot2 protocol
-  - name: Color Plate to camera
+
+  - name: Color Plate from OT2 Deck -> Camera Station
     node: pf400
     action: transfer
     args:
@@ -40,6 +40,7 @@ steps:
     locations:
       source: ot2_gamma_deck_2
       target: camera_station
-  - name: Take Picture
+
+  - name: Take Picture of Color Plate
     node: camera_1
     action: take_picture

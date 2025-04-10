@@ -1,5 +1,6 @@
-from typing import List, Optional, Union
+"""A Bayesian optimization solver for color mixing."""
 
+from typing import List, Optional, Union
 
 import numpy as np
 
@@ -7,10 +8,11 @@ import numpy as np
 # https://python-colormath.readthedocs.io/en/latest/color_objects.html
 from colormath.color_objects import sRGBColor
 from skopt import Optimizer
-from colormath.color_conversions import convert_color
 
 
 class BayesColorSolver:
+    """A Bayesian optimization solver for color mixing."""
+
     def __init__(self, pop_size, target_color) -> None:
         self.optimizer = Optimizer(
             dimensions=[(0.0, 1.0), (0.0, 1.0), (0.0, 1.0), (0.0, 1.0)],
@@ -78,22 +80,3 @@ class BayesColorSolver:
             diffs.append(diff)
 
         return diffs
-
-    @staticmethod
-    def _color_diff(
-        color1_rgb: Union[sRGBColor, List[float]],
-        color2_rgb: Union[sRGBColor, List[float]],
-    ) -> float:
-        if not isinstance(color1_rgb, sRGBColor):
-            color1_rgb = sRGBColor(
-                *color1_rgb, is_upscaled=True if max(color1_rgb) > 1 else False
-            )
-        if not isinstance(color2_rgb, sRGBColor):
-            color2_rgb = sRGBColor(
-                *color2_rgb, is_upscaled=True if max(color2_rgb) > 1 else False
-            )
-
-        color1_lab = convert_color(color1_rgb, LabColor)
-        color2_lab = convert_color(color2_rgb, LabColor)
-        delta_e = delta_e_cie2000(color1_lab, color2_lab)
-        return delta_e

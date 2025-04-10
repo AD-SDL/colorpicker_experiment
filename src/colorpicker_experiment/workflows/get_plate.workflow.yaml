@@ -6,18 +6,16 @@ metadata:
   version: 0.1
 
 steps:
-  - name: Color Plate to Plate Exchange
+  - name: New Plate from Tower 1 -> Exchange
     node: sciclops
     action: get_plate
     locations:
       source: tower1
       target: exchange
-    comments: Move initial color plate from sciclops to plate exchange
 
-  - name: Color Plate to Trash
+  - name: New Plate from Exchange -> Camera Station
     node: pf400
     action: transfer
     locations:
       source: exchange
       target: camera_station
-    comments: Move initial color plate from plate exchange to camera station

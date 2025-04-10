@@ -10,7 +10,7 @@ parameters:
   - name: protocol_path
 
 steps:
-  - name: Color Plate to OT2
+  - name: Color Plate Camera Station --> OT2 Deck
     node: pf400
     action: transfer
     args:
@@ -19,8 +19,8 @@ steps:
     locations:
       source: camera_station
       target: ot2_gamma_deck_2
-    comments: Move initial color plate from camera station to ot2
-  - name: Run Ot2
+
+  - name: Run OT2 Rinse Protocol
     node: ot2_gamma
     action: run_protocol
     args:
@@ -28,8 +28,8 @@ steps:
         wells: $wells
     files:
       protocol: $protocol_path
-    comments: run ot2 protocol
-  - name: Color Plate to Sciclops exchange
+
+  - name: Color Plate OT2 Deck --> Exchange
     node: pf400
     action: transfer
     args:
@@ -38,7 +38,8 @@ steps:
     locations:
       source: ot2_gamma_deck_2
       target: exchange
-  - name: Color Plate back to tower 1
+
+  - name: Color Plate from Exchange -> Tower 1
     node: sciclops
     action: return_plate
     locations:

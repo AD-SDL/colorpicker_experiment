@@ -8,10 +8,13 @@ import numpy as np
 from string import ascii_uppercase
 from bayes_solver import BayesColorSolver
 from random import randint
+from rich.console import Console
+
+console = Console()
 
 
 class ColorPickerExperimentApplication(ExperimentApplication):
-    """An example experiment application."""
+    """A demonstration and benchmarking experimental application: mixing colors autonomously."""
 
     workflow_directory = Path("./workflows").resolve()
     protocol_directory = Path("./protocols").resolve()
@@ -33,7 +36,6 @@ class ColorPickerExperimentApplication(ExperimentApplication):
 
     barty_fill_workflow = WorkflowDefinition(
         name="Reset Colors",
-        description="Reset the ot2 color reservoirs using Barty",
         steps=[
             StepDefinition(
                 name="Refill Colors",
@@ -47,7 +49,6 @@ class ColorPickerExperimentApplication(ExperimentApplication):
     )
     barty_cleanup_workflow = WorkflowDefinition(
         name="Cleanup Colors",
-        description="Cleanup the ot2 color reservoirs using Barty",
         steps=[
             StepDefinition(
                 name="Drain Colors",
@@ -124,6 +125,8 @@ if __name__ == "__main__":
     ):
         experiment_app.logger.info(f"{experiment_app.target_color=}")
         experiment_app.logger.info(f"{experiment_app.pop_size=}")
+        for i in range(5):
+            console.print("██████████", style=f"rgb({experiment_app.target_color[0]},{experiment_app.target_color[1]},{experiment_app.target_color[2]})")
         try:
             # Reset Colors using Barty
             experiment_app.workcell_client.submit_workflow(
