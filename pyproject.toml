@@ -1,12 +1,21 @@
 [project]
 name = "colorpicker_experiment"
-version = "0.2.0"
+version = "0.3.0"
 description = "The RPL's Color Picker demonstration Autonomous Experiment Application"
 authors = [
     {name = "Ryan D. Lewis", email = "ryan.lewis@anl.gov"},
     {name = "Tobias Ginsburg", email = "tginsburg@anl.gov"},
 ]
-dependencies = ["pre-commit>=4.1.0", "madsci-client>=0.1.9", "numpy>=2.0.2", "colormath>=3.0.0", "scikit-learn>=1.6.1", "scikit-optimize>=0.10.2", "opencv-python>=4.11.0.86"]
+dependencies = [
+    "pre-commit>=4.1.0",
+    "madsci-common>=0.4.3",
+    "madsci-client>=0.4.3",
+    "numpy>=2.0.2",
+    "colormath>=3.0.0",
+    "scikit-learn>=1.6.1",
+    "scikit-optimize>=0.10.2",
+    "opencv-python>=4.11.0.86"
+]
 requires-python = ">=3.9.1"
 readme = "README.md"
 license = {text = "MIT"}

@@ -29,7 +29,7 @@ steps:
     files:
       protocol: $protocol_path
 
-  - name: Color Plate OT2 Deck --> Exchange
+  - name: Color Plate OT2 Deck --> Camera Station
     node: pf400
     action: transfer
     args:
@@ -37,11 +37,11 @@ steps:
       target_plate_rotation: "narrow"
     locations:
       source: ot2_gamma_deck_2
-      target: exchange
+      target: camera_station
 
-  - name: Color Plate from Exchange -> Tower 1
-    node: sciclops
-    action: return_plate
-    locations:
-      source: exchange
-      target: tower1
+  # - name: Color Plate from Exchange -> Tower 1
+  #   node: sciclops
+  #   action: return_plate
+  #   locations:
+  #     source: exchange
+  #     target: tower1
