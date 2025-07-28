@@ -149,6 +149,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
                 "wells": self.total_wells,
                 "protocol_path": str(self.config.protocol_directory / "rinse_plate.py"),
             },
+            await_completion=False,
         )
 
 
