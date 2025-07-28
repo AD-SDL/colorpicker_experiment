@@ -138,7 +138,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         for well in current_wells:
             reference_colors.append(colors[well])
         self.previous_colors = reference_colors
-        return self.previous_colors
+        return reference_colors
 
     def clean_up(self) -> None:
         """Ensures that the experiment is cleaned up after completion or failure."""

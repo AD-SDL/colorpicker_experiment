@@ -35,12 +35,13 @@ def run_color_picker_experiment(
         run_name=f"Color Picker Globus Run {datetime.now()}",
         run_description=f"Run for color picker experiment, started using Globus Compute at ~{datetime.now()}",
     ):
+        result = None
         try:
             if init:
                 experiment_app.workcell_client.submit_workflow(
                     experiment_app.barty_fill_workflow, await_completion=False
                 )
-            experiment_app.loop(iteration, inputs)
+            result = experiment_app.loop(iteration, inputs)
         except Exception as e:
             experiment_app.workcell_client.submit_workflow(
                 experiment_app.barty_cleanup_workflow, await_completion=False
@@ -48,6 +49,7 @@ def run_color_picker_experiment(
             raise e
         if cleanup:
             experiment_app.clean_up()
+        return result
 
 
 if __name__ == "__main__":
@@ -55,4 +57,4 @@ if __name__ == "__main__":
         executor.serializer = ComputeSerializer(strategy_code=CombinedCode())
         future = executor.submit(run_color_picker_experiment, init=True, cleanup=True)
         result = future.result()
-        print(result)
+        print(result)  # noqa
