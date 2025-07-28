@@ -92,13 +92,20 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         for i in range(9):
             for j in range(1, 13):
                 self.wells.append(ascii_uppercase[i] + str(j))
+        self.mix_colors_workflow = WorkflowDefinition.from_yaml(
+            self.config.workflow_directory / "mix_colors.workflow.yaml"
+        )
+        self.rinse_plate_workflow = WorkflowDefinition.from_yaml(
+            self.config.workflow_directory / "rinse_plate.workflow.yaml"
+        )
 
-    def loop(self, iteration: int) -> None:
+    def loop(self, iteration: int, inputs: Optional[list[list[float]]] = None) -> None:
         """Run one iteration of the main experiment loop."""
         self.logger.info(f"Running iteration {iteration} of {self.experiment.run_name}")
-        # Get the input volumes for the ot2 to mix in the plate from the bayesian solver
-        inputs = self.solver.run_iteration(self.previous_ratios, self.previous_colors)
-        inputs = (np.array(inputs) * self.config.well_volume).round(3).tolist()
+        # * Get the input volumes for the ot2 to mix in the plate from the bayesian solver, if not provided
+        if inputs is None:
+            inputs = self.solver.run_iteration(self.previous_ratios, self.previous_colors)
+            inputs = (np.array(inputs) * self.config.well_volume).round(3).tolist()
 
         # Track which wells in the plate to create samples in
         current_wells = self.wells[
@@ -107,7 +114,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
 
         # Run the color mixing workflow
         workflow = self.workcell_client.submit_workflow(
-            self.config.workflow_directory / "mix_colors.workflow.yaml",
+            self.mix_colors_workflow,
             {
                 "wells": current_wells,
                 "amounts": inputs,
@@ -128,6 +135,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         for well in current_wells:
             reference_colors.append(colors[well])
         self.previous_colors = reference_colors
+        return self.previous_colors
 
     def clean_up(self) -> None:
         """Ensures that the experiment is cleaned up after completion or failure."""
@@ -135,7 +143,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
             self.barty_cleanup_workflow, await_completion=False
         )
         self.workcell_client.submit_workflow(
-            self.config.workflow_directory / "rinse_plate.workflow.yaml",
+            self.rinse_plate_workflow,
             {
                 "wells": self.total_wells,
                 "protocol_path": str(self.config.protocol_directory / "rinse_plate.py"),
