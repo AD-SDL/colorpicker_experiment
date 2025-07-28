@@ -10,9 +10,21 @@ def run_color_picker_experiment(init: bool = False, iteration: int = 0, inputs: 
     """Run the color picker experiment using Globus Compute."""
     from datetime import datetime
 
-    from colorpicker_experiment.color_picker_app import ColorPickerExperimentApplication
+    from madsci.common.types.experiment_types import ExperimentDesign
 
-    experiment_app = ColorPickerExperimentApplication()
+    from colorpicker_experiment.color_picker_app import (
+        ColorPickerConfig,
+        ColorPickerExperimentApplication,
+    )
+
+    experiment_app = ColorPickerExperimentApplication(
+        config=ColorPickerConfig(
+            experiment_design=ExperimentDesign(
+                experiment_name="Color Picker Globus Compute",
+                experiment_description="A demonstration and benchmarking experimental application: mixing colors autonomously. This run is initiated using Globus Compute.",
+            )
+        )
+    )
 
     with experiment_app.manage_experiment(
         run_name=f"Color Picker Globus Run {datetime.now()}",
