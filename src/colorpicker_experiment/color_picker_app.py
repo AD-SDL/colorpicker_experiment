@@ -105,7 +105,9 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         self.logger.info(f"Running iteration {iteration} of {self.experiment.run_name}")
         # * Get the input volumes for the ot2 to mix in the plate from the bayesian solver, if not provided
         if inputs is None:
-            inputs = self.solver.run_iteration(self.previous_ratios, self.previous_colors)
+            inputs = self.solver.run_iteration(
+                self.previous_ratios, self.previous_colors
+            )
             inputs = (np.array(inputs) * self.config.well_volume).round(3).tolist()
 
         # Track which wells in the plate to create samples in
