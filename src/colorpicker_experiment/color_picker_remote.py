@@ -6,9 +6,13 @@ from globus_compute_sdk import Executor
 from globus_compute_sdk.serialize import CombinedCode, ComputeSerializer
 
 
-def run_color_picker_experiment(experiment_app, init: bool = False, iteration: int = 0, inputs: Optional[list[list[float]]] = None) -> list[float]:
+def run_color_picker_experiment(init: bool = False, iteration: int = 0, inputs: Optional[list[list[float]]] = None) -> list[float]:
     """Run the color picker experiment using Globus Compute."""
     from datetime import datetime
+
+    from colorpicker_experiment.color_picker_app import ColorPickerExperimentApplication
+
+    experiment_app = ColorPickerExperimentApplication()
 
     with experiment_app.manage_experiment(
         run_name=f"Color Picker Globus Run {datetime.now()}",
@@ -30,11 +34,9 @@ def run_color_picker_experiment(experiment_app, init: bool = False, iteration: i
 
 
 if __name__ == "__main__":
-    from color_picker_app import ColorPickerExperimentApplication
-    experiment_app = ColorPickerExperimentApplication()
     with Executor(endpoint_id="0de58510-6af5-4731-a924-87bbaa1648fe") as executor:
         executor.serializer = ComputeSerializer(
             strategy_code=CombinedCode()
         )
-        future = executor.submit(run_color_picker_experiment, experiment_app, init=True)
+        future = executor.submit(run_color_picker_experiment, init=True)
         result = future.result()

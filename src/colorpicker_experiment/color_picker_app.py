@@ -7,7 +7,6 @@ from string import ascii_uppercase
 from typing import Optional, Union
 
 import numpy as np
-from bayes_solver import BayesColorSolver
 from madsci.client.experiment_application import ExperimentApplication
 from madsci.common.types.base_types import MadsciBaseSettings, PathLike
 from madsci.common.types.experiment_types import ExperimentDesign
@@ -15,7 +14,9 @@ from madsci.common.types.step_types import StepDefinition
 from madsci.common.types.workflow_types import WorkflowDefinition
 from pydantic import Field
 from rich.console import Console
-from utils import get_colors_from_file
+
+from colorpicker_experiment.bayes_solver import BayesColorSolver
+from colorpicker_experiment.utils import get_colors_from_file
 
 console = Console()
 
