@@ -24,9 +24,9 @@ console = Console()
 class ColorPickerConfig(MadsciBaseSettings):
     """Configuration for the color picker experiment application."""
 
-    workflow_directory: PathLike = Path(__file__).parent / "workflows".resolve()
+    workflow_directory: PathLike = (Path(__file__).parent / "workflows").resolve()
     """The directory where the workflows are stored."""
-    protocol_directory: PathLike = Path(__file__).parent / "protocols".resolve()
+    protocol_directory: PathLike = (Path(__file__).parent / "protocols").resolve()
     """The directory where the protocols are stored."""
     image_directory: PathLike = Path("./images").resolve()
     """The directory where the images are stored."""
