@@ -6,8 +6,10 @@ metadata:
   version: 0.1
 
 parameters:
-  - name: wells
-  - name: protocol_path
+  json_inputs:
+    - key: wells
+  file_inputs:
+    - key: protocol_path
 
 steps:
   - name: Color Plate Camera Station --> OT2 Deck
@@ -18,16 +20,15 @@ steps:
       target_plate_rotation: "wide"
     locations:
       source: camera_station
-      target: ot2_gamma_deck_2
+      target: ot2_gamma.deck_2
 
   - name: Run OT2 Rinse Protocol
     node: ot2_gamma
     action: run_protocol
-    args:
-      parameters:
-        wells: $wells
+    parameters:
+      wells: wells
     files:
-      protocol: $protocol_path
+      protocol: protocol_path
 
   - name: Color Plate OT2 Deck --> Camera Station
     node: pf400
@@ -36,7 +37,7 @@ steps:
       source_plate_rotation: "wide"
       target_plate_rotation: "narrow"
     locations:
-      source: ot2_gamma_deck_2
+      source: ot2_gamma.deck_2
       target: camera_station
 
   # - name: Color Plate from Exchange -> Tower 1

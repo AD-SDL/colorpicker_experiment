@@ -1,0 +1,522 @@
+node_name: default.node
+node_id: 01K81DP28N0QNQHKPFEXGT1Z4V
+node_description: null
+node_type: device
+module_name: color_picker_experiment_application
+module_version: 0.0.1
+capabilities:
+  get_info: true
+  get_state: true
+  get_status: true
+  send_action: true
+  get_action_result: true
+  get_action_history: true
+  action_files: true
+  send_admin_commands: true
+  set_config: true
+  get_resources: false
+  get_log: true
+  admin_commands:
+  - lock
+  - reset
+  - shutdown
+  - unlock
+node_url: null
+actions: {}
+config:
+  node_definition: default.node.yaml
+  node_info_path: null
+  update_node_files: true
+  status_update_interval: 2.0
+  state_update_interval: 2.0
+  node_url: http://127.0.0.1:2000/
+  uvicorn_kwargs: {}
+  workflow_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/workflows
+  protocol_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/protocols
+  image_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/images
+  experiment_design: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
+  pop_size: 4
+  well_volume: 275
+  iterations: 4
+config_schema:
+  $defs:
+    ExperimentDesign:
+      description: A design for a MADSci experiment.
+      properties:
+        experiment_name:
+          description: The name of the experiment.
+          title: Experiment Name
+          type: string
+        experiment_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: A description of the experiment.
+          title: Experiment Description
+        resource_conditions:
+          description: The starting layout of resources required for the experiment.
+          items:
+            discriminator:
+              mapping:
+                no_resource_present: '#/$defs/NoResourceInLocationCondition'
+                resource_child_field_check: '#/$defs/ResourceChildFieldCheckCondition'
+                resource_field_check: '#/$defs/ResourceFieldCheckCondition'
+                resource_present: '#/$defs/ResourceInLocationCondition'
+              propertyName: condition_type
+            oneOf:
+            - $ref: '#/$defs/ResourceInLocationCondition'
+            - $ref: '#/$defs/NoResourceInLocationCondition'
+            - $ref: '#/$defs/ResourceFieldCheckCondition'
+            - $ref: '#/$defs/ResourceChildFieldCheckCondition'
+          title: Resource Conditions
+          type: array
+        ownership_info:
+          $ref: '#/$defs/OwnershipInfo'
+          description: Information about the users, campaigns, etc. that this design
+            is owned by.
+          title: Ownership Info
+      required:
+      - experiment_name
+      title: ExperimentDesign
+      type: object
+    NoResourceInLocationCondition:
+      additionalProperties: true
+      description: A condition that checks if a resource is present
+      properties:
+        condition_type:
+          const: no_resource_present
+          default: no_resource_present
+          description: The type of condition to check
+          title: Condition Type
+          type: string
+        condition_name:
+          default: A Condition
+          description: Name of the Condition
+          title: Condition Name
+          type: string
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the location to check for a resource in
+          title: Location
+        location_name:
+          description: The name of the location to check for a resource in
+          title: Location
+          type: string
+        key:
+          anyOf:
+          - type: string
+          - type: integer
+          - maxItems: 2
+            minItems: 2
+            prefixItems:
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            type: array
+          - maxItems: 3
+            minItems: 3
+            prefixItems:
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            type: array
+          default: 0
+          description: The key to check in the location's container resource
+          title: Key
+      required:
+      - location_name
+      title: NoResourceInLocationCondition
+      type: object
+    OperatorTypeEnum:
+      description: Comparison operators for value checks
+      enum:
+      - is_greater_than
+      - is_less_than
+      - is_equal_to
+      - is_greater_than_or_equal_to
+      - is_less_than_or_equal_to
+      title: OperatorTypeEnum
+      type: string
+    OwnershipInfo:
+      description: Information about the ownership of a MADSci object.
+      properties:
+        user_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the user who owns the object.
+          title: User ID
+        experiment_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the experiment that owns the object.
+          title: Experiment ID
+        campaign_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the campaign that owns the object.
+          title: Campaign ID
+        project_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the project that owns the object.
+          title: Project ID
+        node_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the node that owns the object.
+          title: Node ID
+        workcell_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the workcell that owns the object.
+          title: Workcell ID
+        lab_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the lab that owns the object.
+          title: Lab ID
+        step_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the step that owns the object.
+          title: Step ID
+        workflow_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the workflow that owns the object.
+          title: Workflow ID
+        manager_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the manager that owns the object.
+          title: Manager ID
+      title: OwnershipInfo
+      type: object
+    ResourceChildFieldCheckCondition:
+      additionalProperties: true
+      description: A condition that checks if a resource is present
+      properties:
+        condition_type:
+          const: resource_child_field_check
+          default: resource_child_field_check
+          description: The type of condition to check
+          title: Condition Type
+          type: string
+        condition_name:
+          default: A Condition
+          description: Name of the Condition
+          title: Condition Name
+          type: string
+        resource_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The id of the resource to check a quality of
+          title: Resource ID
+        resource_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The name of the resource to check a quality of
+          title: Resource Name
+        field:
+          description: The field to evaluate against the operator
+          title: Field
+          type: string
+        operator:
+          $ref: '#/$defs/OperatorTypeEnum'
+          description: The check (is_greater_than, is_less_than or is_equal_to etc.)
+            to evaluate the field by
+          title: Operator
+        key:
+          anyOf:
+          - type: string
+          - type: integer
+          - maxItems: 2
+            minItems: 2
+            prefixItems:
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            type: array
+          - maxItems: 3
+            minItems: 3
+            prefixItems:
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            type: array
+          default: 0
+          description: The key to check in the container resource
+          title: Key
+        target_value:
+          description: the target value for the field
+          title: Target Value
+      required:
+      - field
+      - operator
+      - target_value
+      title: ResourceChildFieldCheckCondition
+      type: object
+    ResourceFieldCheckCondition:
+      additionalProperties: true
+      description: A condition that checks if a resource is present
+      properties:
+        condition_type:
+          const: resource_field_check
+          default: resource_field_check
+          description: The type of condition to check
+          title: Condition Type
+          type: string
+        condition_name:
+          default: A Condition
+          description: Name of the Condition
+          title: Condition Name
+          type: string
+        resource_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The id of the resource to check a quality of
+          title: Resource ID
+        resource_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The name of the resource to check a quality of
+          title: Resource Name
+        field:
+          description: The field to evaluate against the operator
+          title: Field
+          type: string
+        operator:
+          $ref: '#/$defs/OperatorTypeEnum'
+          description: The check (is_greater_than, is_less_than or is_equal_to etc.)
+            to evaluate the field by
+          title: Operator
+        target_value:
+          description: the target value for the field
+          title: Target Value
+      required:
+      - field
+      - operator
+      - target_value
+      title: ResourceFieldCheckCondition
+      type: object
+    ResourceInLocationCondition:
+      additionalProperties: true
+      description: A condition that checks if a resource is present
+      properties:
+        condition_type:
+          const: resource_present
+          default: resource_present
+          description: The type of condition to check
+          title: Condition Type
+          type: string
+        condition_name:
+          default: A Condition
+          description: Name of the Condition
+          title: Condition Name
+          type: string
+        location_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The ID of the location to check for a resource in
+          title: Location
+        location_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: The name of the location to check for a resource in
+          title: Location
+        key:
+          anyOf:
+          - type: string
+          - type: integer
+          - maxItems: 2
+            minItems: 2
+            prefixItems:
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            type: array
+          - maxItems: 3
+            minItems: 3
+            prefixItems:
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            - anyOf:
+              - type: integer
+              - type: string
+            type: array
+          default: 0
+          description: The key to check in the location's container resource
+          title: Key
+        resource_class:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Check that the resource in this location is of a certain class
+          title: Resource Class
+      title: ResourceInLocationCondition
+      type: object
+  description: Configuration for the color picker experiment application.
+  properties:
+    node_definition:
+      anyOf:
+      - type: string
+      - format: path
+        type: string
+      - type: 'null'
+      default: default.node.yaml
+      description: Path to the node definition file to use. If set, the node will
+        load the definition from this file on startup. Otherwise, a default configuration
+        will be created.
+      title: Node Definition File
+    node_info_path:
+      anyOf:
+      - type: string
+      - format: path
+        type: string
+      - type: 'null'
+      default: null
+      description: Path to export the generated node info file. If not set, will use
+        the node name and the node_definition's path.
+      title: Node Info Path
+    update_node_files:
+      default: true
+      description: Whether to update the node definition and info files on startup.
+        If set to False, the node will not update the files even if they are out of
+        date.
+      title: Update Node Files
+      type: boolean
+    status_update_interval:
+      anyOf:
+      - type: number
+      - type: 'null'
+      default: 2.0
+      description: The interval in seconds at which the node should update its status.
+      title: Status Update Interval
+    state_update_interval:
+      anyOf:
+      - type: number
+      - type: 'null'
+      default: 2.0
+      description: The interval in seconds at which the node should update its state.
+      title: State Update Interval
+    node_url:
+      default: http://127.0.0.1:2000/
+      description: The URL used to communicate with the node. This is the base URL
+        for the REST API.
+      format: uri
+      minLength: 1
+      title: Node URL
+      type: string
+    uvicorn_kwargs:
+      description: Configuration for the Uvicorn server that runs the REST API.
+      title: Uvicorn Configuration
+      type: object
+    workflow_directory:
+      anyOf:
+      - type: string
+      - format: path
+        type: string
+      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/workflows
+      title: Workflow Directory
+    protocol_directory:
+      anyOf:
+      - type: string
+      - format: path
+        type: string
+      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/protocols
+      title: Protocol Directory
+    image_directory:
+      anyOf:
+      - type: string
+      - format: path
+        type: string
+      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/images
+      title: Image Directory
+    experiment_design:
+      anyOf:
+      - $ref: '#/$defs/ExperimentDesign'
+      - type: string
+      - format: path
+        type: string
+      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
+      title: Experiment Design
+    pop_size:
+      default: 4
+      title: Pop Size
+      type: integer
+    well_volume:
+      anyOf:
+      - type: integer
+      - type: number
+      default: 275
+      gt: 0
+      title: Well Volume
+    iterations:
+      default: 4
+      exclusiveMinimum: 0
+      title: Iterations
+      type: integer
+  title: ColorPickerConfig
+  type: object

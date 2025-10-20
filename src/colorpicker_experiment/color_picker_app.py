@@ -7,11 +7,12 @@ from string import ascii_uppercase
 from typing import Optional, Union
 
 import numpy as np
-from madsci.client.experiment_application import ExperimentApplication
-from madsci.common.types.base_types import MadsciBaseSettings, PathLike
+from madsci.common.types.base_types import PathLike
 from madsci.common.types.experiment_types import ExperimentDesign
+from madsci.common.types.node_types import RestNodeConfig
 from madsci.common.types.step_types import StepDefinition
 from madsci.common.types.workflow_types import WorkflowDefinition
+from madsci.experiment_application import ExperimentApplication
 from pydantic import Field
 from rich.console import Console
 
@@ -21,7 +22,7 @@ from colorpicker_experiment.utils import get_colors_from_file
 console = Console()
 
 
-class ColorPickerConfig(MadsciBaseSettings):
+class ColorPickerConfig(RestNodeConfig):
     """Configuration for the color picker experiment application."""
 
     workflow_directory: PathLike = (Path(__file__).parent / "workflows").resolve()
@@ -116,11 +117,13 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         ]
 
         # Run the color mixing workflow
-        workflow = self.workcell_client.submit_workflow(
-            self.mix_colors_workflow,
-            {
+        workflow = self.workcell_client.start_workflow(
+            workflow_definition=self.mix_colors_workflow,
+            json_inputs={
                 "wells": current_wells,
                 "amounts": inputs,
+            },
+            file_inputs={
                 "protocol_path": str(self.config.protocol_directory / "mix_colors.py"),
             },
         )
@@ -142,13 +145,15 @@ class ColorPickerExperimentApplication(ExperimentApplication):
 
     def clean_up(self) -> None:
         """Ensures that the experiment is cleaned up after completion or failure."""
-        self.workcell_client.submit_workflow(
+        self.workcell_client.start_workflow(
             self.barty_cleanup_workflow, await_completion=False
         )
-        self.workcell_client.submit_workflow(
+        self.workcell_client.start_workflow(
             self.rinse_plate_workflow,
-            {
+            json_inputs={
                 "wells": self.total_wells,
+            },
+            file_inputs={
                 "protocol_path": str(self.config.protocol_directory / "rinse_plate.py"),
             },
             await_completion=False,
@@ -172,13 +177,13 @@ if __name__ == "__main__":
 
         try:
             # Reset Colors using Barty
-            experiment_app.workcell_client.submit_workflow(
+            experiment_app.workcell_client.start_workflow(
                 experiment_app.barty_fill_workflow, await_completion=False
             )
             for i in range(experiment_app.config.iterations):
                 experiment_app.loop(i)
         except Exception as e:
-            experiment_app.workcell_client.submit_workflow(
+            experiment_app.workcell_client.start_workflow(
                 experiment_app.barty_cleanup_workflow, await_completion=False
             )
             raise e
