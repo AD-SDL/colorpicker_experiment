@@ -13,11 +13,11 @@ def run_color_picker_experiment(
     cleanup: bool = False,
 ) -> list[float]:
     """Run the color picker experiment using Globus Compute."""
-    from datetime import datetime
+    from datetime import datetime  # noqa: PLC0415
 
-    from madsci.common.types.experiment_types import ExperimentDesign
+    from madsci.common.types.experiment_types import ExperimentDesign  # noqa: PLC0415
 
-    from colorpicker_experiment.color_picker_app import (
+    from colorpicker_experiment.color_picker_app import (  # noqa: PLC0415
         ColorPickerConfig,
         ColorPickerExperimentApplication,
     )

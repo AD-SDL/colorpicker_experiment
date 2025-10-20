@@ -18,7 +18,7 @@ def _to_homogeneous(pts: "npt.NDArray[np.int64]") -> "npt.NDArray[np.float64]":
 
 
 def _homogenize(pts: "npt.NDArray[np.float64]") -> "npt.NDArray[np.float64]":
-    *front, d = pts.shape
+    *front, _d = pts.shape
     return pts / pts[..., -1].reshape(*front, 1)
 
 
@@ -56,7 +56,7 @@ def _plate_size(p: "npt.NDArray[np.int64]") -> np.float64:
 def _orient(img: cv2.Mat) -> "npt.NDArray[np.int64]":
     """Finds the corners in image coordinate space of the largest fiducial."""
     # Find all of the fiducials
-    corners, ids = _find_fiducials(img)
+    corners, _ids = _find_fiducials(img)
     if not corners:
         raise RuntimeError(
             "Fiducial not found. Check if the ArUco tag is in the image and not mirrored."
