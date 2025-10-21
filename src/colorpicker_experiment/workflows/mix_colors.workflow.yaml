@@ -22,6 +22,7 @@ steps:
     locations:
       source: camera_station
       target: ot2_gamma.deck_2
+      rotation_deck: pf400.rotation_deck
 
   - name: Run OT2 Color Mixing Protocol
     node: ot2_gamma
@@ -41,6 +42,7 @@ steps:
     locations:
       source: ot2_gamma.deck_2
       target: camera_station
+      rotation_deck: pf400.rotation_deck
 
   - name: Take Picture of Color Plate
     node: camera_1

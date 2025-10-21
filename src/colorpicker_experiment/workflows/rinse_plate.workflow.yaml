@@ -21,6 +21,7 @@ steps:
     locations:
       source: camera_station
       target: ot2_gamma.deck_2
+      rotation_deck: pf400.rotation_deck
 
   - name: Run OT2 Rinse Protocol
     node: ot2_gamma
@@ -39,6 +40,7 @@ steps:
     locations:
       source: ot2_gamma.deck_2
       target: camera_station
+      rotation_deck: pf400.rotation_deck
 
   # - name: Color Plate from Exchange -> Tower 1
   #   node: sciclops

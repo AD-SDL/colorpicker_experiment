@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:2e8507492188ff39a1d10bca756f7cb64f0386fc50b8b999dfa0acba187dfd9c"
+content_hash = "sha256:597e610dac732c9c3d8632c1a1834c2ca6a806d9f22969e96dfcea66412547fa"
 
 [[metadata.targets]]
 requires_python = ">=3.11"
@@ -699,6 +699,40 @@ dependencies = [
 files = [
     {file = "madsci_common-0.5.0rc2-py3-none-any.whl", hash = "sha256:13e4f811850cbe59194c9ce8d54d8f90ddba9abe7cf1e46472e123454dad2483"},
     {file = "madsci_common-0.5.0rc2.tar.gz", hash = "sha256:99dd5d107416873870d95b5f33e511541fa4c498034550e86da013b8279007e3"},
+]
+
+[[package]]
+name = "madsci-experiment-application"
+version = "0.5.0rc2"
+requires_python = ">=3.9.1"
+summary = "The Modular Autonomous Discovery for Science (MADSci) Experiment Application framework."
+groups = ["default"]
+dependencies = [
+    "madsci-client",
+    "madsci-common",
+    "madsci-node-module",
+    "pydantic>=2.0.0",
+    "rich>=10.0.0",
+    "typing-extensions>=4.0.0",
+]
+files = [
+    {file = "madsci_experiment_application-0.5.0rc2-py3-none-any.whl", hash = "sha256:b60f05109f6f7f5e86f8b1dc5d0c2d8cc5f9ea9eae98e489ae44119e34d99dc7"},
+    {file = "madsci_experiment_application-0.5.0rc2.tar.gz", hash = "sha256:6b821f37839bdd510b2b469dd4ecfe45031628c9c043b38d480e769b3414036c"},
+]
+
+[[package]]
+name = "madsci-node-module"
+version = "0.4.7"
+requires_python = ">=3.9.1"
+summary = "The Modular Autonomous Discovery for Science (MADSci) Node Module Helper Classes."
+groups = ["default"]
+dependencies = [
+    "madsci-client",
+    "madsci-common",
+]
+files = [
+    {file = "madsci_node_module-0.4.7-py3-none-any.whl", hash = "sha256:410e6a89a908fea6bc30cd523831b05dfd268d32b11b973ff9d96c90d8fefdb2"},
+    {file = "madsci_node_module-0.4.7.tar.gz", hash = "sha256:3b2b505e08ccd64dcb7762b5ad5d7c7bb2d672fc773a057116e7b7e42a2c1c16"},
 ]
 
 [[package]]
