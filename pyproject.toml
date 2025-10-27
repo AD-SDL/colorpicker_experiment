@@ -8,9 +8,9 @@ authors = [
 ]
 dependencies = [
     "pre-commit>=4.1.0",
-    "madsci.common>=0.5.0-rc.2",
-    "madsci.client>=0.5.0-rc.2",
-    "madsci.experiment_application>=0.5.0-rc.2",
+    "madsci.common~=0.5.0",
+    "madsci.client~=0.5.0",
+    "madsci.experiment_application~=0.5.0",
     "numpy>=2.0.2",
     "colormath>=3.0.0",
     "scikit-learn>=1.6.1",

@@ -120,8 +120,10 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         workflow = self.workcell_client.start_workflow(
             workflow_definition=self.mix_colors_workflow,
             json_inputs={
-                "wells": current_wells,
-                "amounts": inputs,
+                "mixing_protocol_parameters": {
+                    "wells": current_wells,
+                    "amounts": inputs,
+                },
             },
             file_inputs={
                 "protocol_path": str(self.config.protocol_directory / "mix_colors.py"),
@@ -151,7 +153,9 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         self.workcell_client.start_workflow(
             self.rinse_plate_workflow,
             json_inputs={
-                "wells": self.total_wells,
+                "rinse_protocol_parameters": {
+                    "wells": self.total_wells,
+                },
             },
             file_inputs={
                 "protocol_path": str(self.config.protocol_directory / "rinse_plate.py"),
@@ -187,4 +191,5 @@ if __name__ == "__main__":
                 experiment_app.barty_cleanup_workflow, await_completion=False
             )
             raise e
-        experiment_app.clean_up()
+        else:
+            experiment_app.clean_up()

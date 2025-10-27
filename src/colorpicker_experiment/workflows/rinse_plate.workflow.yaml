@@ -7,7 +7,7 @@ metadata:
 
 parameters:
   json_inputs:
-    - key: wells
+    - key: rinse_protocol_parameters
   file_inputs:
     - key: protocol_path
 
@@ -26,8 +26,9 @@ steps:
   - name: Run OT2 Rinse Protocol
     node: ot2_gamma
     action: run_protocol
-    parameters:
-      wells: wells
+    use_parameters:
+      args:
+        parameters: rinse_protocol_parameters
     files:
       protocol: protocol_path
 
