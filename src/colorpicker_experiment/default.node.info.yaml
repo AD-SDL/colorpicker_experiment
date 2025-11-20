@@ -32,6 +32,10 @@ config:
   state_update_interval: 2.0
   node_url: http://127.0.0.1:2000/
   uvicorn_kwargs: {}
+  server_mode: false
+  lab_server_url: null
+  run_args: []
+  run_kwargs: {}
   workflow_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/workflows
   protocol_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/protocols
   image_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/images
@@ -471,8 +475,30 @@ config_schema:
       title: Node URL
       type: string
     uvicorn_kwargs:
+      additionalProperties: true
       description: Configuration for the Uvicorn server that runs the REST API.
       title: Uvicorn Configuration
+      type: object
+    server_mode:
+      default: false
+      title: Server Mode
+      type: boolean
+    lab_server_url:
+      anyOf:
+      - type: string
+      - format: uri
+        minLength: 1
+        type: string
+      - type: 'null'
+      default: null
+      title: Lab Server Url
+    run_args:
+      items: {}
+      title: Run Args
+      type: array
+    run_kwargs:
+      additionalProperties: true
+      title: Run Kwargs
       type: object
     workflow_directory:
       anyOf:
