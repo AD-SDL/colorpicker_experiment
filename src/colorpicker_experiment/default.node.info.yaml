@@ -42,7 +42,7 @@ config:
   experiment_design: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
   pop_size: 4
   well_volume: 275
-  iterations: 4
+  iterations: 1
 config_schema:
   $defs:
     ExperimentDesign:
