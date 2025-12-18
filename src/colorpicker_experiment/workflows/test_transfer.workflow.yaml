@@ -1,28 +1,11 @@
-name: Rinse Plate Workflow
+name: Test Transfer Workflow
 
 metadata:
-  author: Tobias Ginsburg, Rafael Vescovi
-  info: New Plate workflow for the RPL Color Picker
+  author: Ryan D. Lewis
+  info: Test workflow for validating different transfers
   version: 0.1
 
-parameters:
-  json_inputs:
-    - key: rinse_protocol_parameters
-  file_inputs:
-    - key: protocol_path
-
 steps:
-  # - name: Color Plate Camera Station --> OT2 Deck
-  #   node: pf400
-  #   action: transfer
-  #   args:
-  #     source_plate_rotation: "narrow"
-  #     target_plate_rotation: "wide"
-  #   locations:
-  #     source: camera_station
-  #     target: ot2_gamma.deck_2
-  #     rotation_deck: pf400.rotation_deck
-
   - name: Color Plate from Camera Station -> Rotation Deck
     node: pf400
     action: transfer
@@ -53,26 +36,6 @@ steps:
       target: ot2_gamma.deck_2
       target_approach: ot2_gamma.safe_approach
 
-  - name: Run OT2 Rinse Protocol
-    node: ot2_gamma
-    action: run_protocol
-    use_parameters:
-      args:
-        parameters: rinse_protocol_parameters
-    files:
-      protocol: protocol_path
-
-  # - name: Color Plate OT2 Deck --> Camera Station
-  #   node: pf400
-  #   action: transfer
-  #   args:
-  #     source_plate_rotation: "wide"
-  #     target_plate_rotation: "narrow"
-  #   locations:
-  #     source: ot2_gamma.deck_2
-  #     target: camera_station
-  #     rotation_deck: pf400.rotation_deck
-
   - name: Color Plate from OT2 Deck -> Rotation Deck
     node: pf400
     action: transfer
@@ -95,10 +58,3 @@ steps:
       source: pf400.rotation_deck
       target: camera_station
       target_approach: camera_station_approach
-
-  # - name: Color Plate from Exchange -> Tower 1
-  #   node: sciclops
-  #   action: return_plate
-  #   locations:
-  #     source: exchange
-  #     target: tower1

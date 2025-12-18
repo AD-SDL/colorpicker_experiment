@@ -3,7 +3,7 @@ name: Mix Colors Workflow
 metadata:
   author: Tobias Ginsburg, Rafael Vescovi
   info: New Plate workflow for the RPL Color Picker
-  version: 0.1
+  version: 0.2
 
 parameters:
   json_inputs:
@@ -12,16 +12,48 @@ parameters:
     - key: protocol_path
 
 steps:
-  - name: Color Plate from Camera Station -> OT2 Deck
+  # - name: Color Plate from Camera Station -> OT2 Deck
+  #   node: pf400
+  #   action: transfer
+  #   args:
+  #     source_plate_rotation: "narrow"
+  #     target_plate_rotation: "wide"
+  #   locations:
+  #     source: camera_station
+  #     source_approach: camera_station_approach
+  #     target: ot2_gamma.deck_2
+  #     target_approach: ot2_gamma.safe_approach
+  #     rotation_deck: pf400.rotation_deck
+
+  - name: Color Plate from Camera Station -> Rotation Deck
     node: pf400
     action: transfer
     args:
       source_plate_rotation: "narrow"
-      target_plate_rotation: "wide"
+      target_plate_rotation: "narrow"
     locations:
       source: camera_station
+      source_approach: camera_station_approach
+      target: pf400.rotation_deck
+
+  - name: Color Plate from Rotation Deck -> OT2 Deck Pt 1
+    node: pf400
+    action: pick_plate
+    args:
+      source_plate_rotation: "wide"
+      grab_offset: 2.0
+    locations:
+      source: pf400.rotation_deck_wide
+
+  - name: Color Plate from Rotation Deck -> OT2 Deck Pt 2
+    node: pf400
+    action: place_plate
+    args:
+      target_plate_rotation: "wide"
+      grab_offset: -4.0
+    locations:
       target: ot2_gamma.deck_2
-      rotation_deck: pf400.rotation_deck
+      target_approach: ot2_gamma.safe_approach
 
   - name: Run OT2 Color Mixing Protocol
     key: run_ot2_mixing_protocol
@@ -33,16 +65,39 @@ steps:
     files:
       protocol: protocol_path
 
-  - name: Color Plate from OT2 Deck -> Camera Station
+  # - name: Color Plate from OT2 Deck -> Camera Station
+  #   node: pf400
+  #   action: transfer
+  #   args:
+  #     source_plate_rotation: "wide"
+  #     target_plate_rotation: "narrow"
+  #   locations:
+  #     source: ot2_gamma.deck_2
+  #     target: camera_station
+  #     rotation_deck: pf400.rotation_deck
+
+  - name: Color Plate from OT2 Deck -> Rotation Deck
     node: pf400
     action: transfer
     args:
       source_plate_rotation: "wide"
-      target_plate_rotation: "narrow"
+      target_plate_rotation: "wide"
     locations:
       source: ot2_gamma.deck_2
+      source_approach: ot2_gamma.safe_approach
+      target: pf400.rotation_deck_wide
+
+  - name: Color Plate from Rotation Deck -> Camera Station
+    node: pf400
+    action: transfer
+    args:
+      source_plate_rotation: "narrow"
+      target_plate_rotation: "narrow"
+      grab_offset: -3.0
+    locations:
+      source: pf400.rotation_deck
       target: camera_station
-      rotation_deck: pf400.rotation_deck
+      target_approach: camera_station_approach
 
   - name: Take Picture of Color Plate
     key: take_picture
