@@ -58,7 +58,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
     
 
     def __init__(
-        self, config: Optional[ColorPickerConfig] = None
+        self, opentron: str, config: Optional[ColorPickerConfig] = None
     ) -> "ColorPickerExperimentApplication":
         """Initialize the color picker experiment application."""
         if config:
@@ -127,10 +127,10 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         self.previous_colors = reference_colors
         return reference_colors
 
-    def run_experiment(self, opentron: str) -> None:
+    def run_experiment(self) -> None:
         """Run the color picker experiment."""
         for iteration in range(self.config.iterations):
-            colors = self.loop(iteration, opentron)
+            colors = self.loop(iteration, self.opentron)
             self.previous_ratios = self.solver.process_results(colors)
         console.print(
             f"[bold green]Target Color:[/bold green] {self.target_color} | [bold blue]Final Mixed Color:[/bold blue] {self.previous_colors[np.argmin(self.previous_ratios)]}"
@@ -138,9 +138,9 @@ class ColorPickerExperimentApplication(ExperimentApplication):
 
 
 if __name__ == "__main__":
-    app1 = ColorPickerExperimentApplication()
-    app2 = ColorPickerExperimentApplication()
-    thread1 = Thread(target=app1.run_experiment, args=("ot2_gamma",))
-    thread2 = Thread(target=app2.run_experiment, args=("ot2_delta",))
+    app1 = ColorPickerExperimentApplication(opentron="ot2_gamma")
+    app2 = ColorPickerExperimentApplication(opentron="ot2_delta")
+    thread1 = Thread(target=app1.run_experiment)
+    thread2 = Thread(target=app2.run_experiment)
     thread1.start()
     thread2.start()
