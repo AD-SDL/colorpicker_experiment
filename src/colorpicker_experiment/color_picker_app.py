@@ -15,6 +15,7 @@ from madsci.experiment_application import ExperimentApplication
 from madsci.experiment_application.experiment_application import (
     ExperimentApplicationConfig,
 )
+from threading import Thread
 from pydantic import Field
 from rich.console import Console
 
@@ -54,32 +55,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
     previous_ratios = None
     previous_colors = None
 
-    barty_fill_workflow = WorkflowDefinition(
-        name="Reset Colors",
-        steps=[
-            StepDefinition(
-                name="Refill Colors",
-                node="barty",
-                action="fill_all",
-                args={
-                    "amount": 100,
-                },
-            )
-        ],
-    )
-    barty_cleanup_workflow = WorkflowDefinition(
-        name="Cleanup Colors",
-        steps=[
-            StepDefinition(
-                name="Drain Colors",
-                node="barty",
-                action="drain_all",
-                args={
-                    "amount": 100,
-                },
-            ),
-        ],
-    )
+    
 
     def __init__(
         self, config: Optional[ColorPickerConfig] = None
@@ -103,7 +79,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
             self.config.workflow_directory / "rinse_plate.workflow.yaml"
         )
 
-    def loop(self, iteration: int, inputs: Optional[list[list[float]]] = None) -> None:
+    def loop(self, opentron: str, iteration: int, inputs: Optional[list[list[float]]] = None) -> None:
         """Run one iteration of the main experiment loop."""
         self.logger.info(f"Running iteration {iteration} of {self.experiment.run_name}")
         # * Get the input volumes for the ot2 to mix in the plate from the bayesian solver, if not provided
@@ -117,11 +93,15 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         current_wells = self.wells[
             iteration * self.config.pop_size : (iteration + 1) * self.config.pop_size
         ]
-
+        opentron_location = f"{opentron}.deck_2"
+        opentron_location_approach = f"{opentron}.safe_approach"
         # Run the color mixing workflow
         workflow = self.workcell_client.start_workflow(
             workflow_definition=self.mix_colors_workflow,
             json_inputs={
+                "opentron_name": opentron,
+                "opentron_location": opentron_location,
+                "opentron_location_approach": opentron_location_approach,
                 "mixing_protocol_parameters": {
                     "wells": current_wells,
                     "amounts": inputs,
@@ -147,51 +127,20 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         self.previous_colors = reference_colors
         return reference_colors
 
-    def clean_up(self) -> None:
-        """Ensures that the experiment is cleaned up after completion or failure."""
-        self.workcell_client.start_workflow(
-            self.barty_cleanup_workflow, await_completion=False
-        )
-        self.workcell_client.start_workflow(
-            self.rinse_plate_workflow,
-            json_inputs={
-                "rinse_protocol_parameters": {
-                    "wells": self.total_wells,
-                },
-            },
-            file_inputs={
-                "protocol_path": str(self.config.protocol_directory / "rinse_plate.py"),
-            },
-            await_completion=False,
+    def run_experiment(self, opentron: str) -> None:
+        """Run the color picker experiment."""
+        for iteration in range(self.config.iterations):
+            colors = self.loop(iteration, opentron)
+            self.previous_ratios = self.solver.process_results(colors)
+        console.print(
+            f"[bold green]Target Color:[/bold green] {self.target_color} | [bold blue]Final Mixed Color:[/bold blue] {self.previous_colors[np.argmin(self.previous_ratios)]}"
         )
 
 
 if __name__ == "__main__":
-    experiment_app = ColorPickerExperimentApplication()
-    current_time = datetime.datetime.now()
-    with experiment_app.manage_experiment(
-        run_name=f"Color Picker Experiment Run {current_time}",
-        run_description=f"Run for color picker experiment, started at ~{current_time}",
-    ):
-        experiment_app.logger.info(f"{experiment_app.target_color=}")
-        for _ in range(5):
-            console.print(
-                "██████████",
-                style=f"rgb({experiment_app.target_color[0]},{experiment_app.target_color[1]},{experiment_app.target_color[2]})",
-            )
-        experiment_app.logger.info(f"{experiment_app.config=}")
-
-        try:
-            # Reset Colors using Barty
-            experiment_app.workcell_client.start_workflow(
-                experiment_app.barty_fill_workflow, await_completion=False
-            )
-            for i in range(experiment_app.config.iterations):
-                experiment_app.loop(i)
-        except Exception as e:
-            experiment_app.workcell_client.start_workflow(
-                experiment_app.barty_cleanup_workflow, await_completion=False
-            )
-            raise e
-        else:
-            experiment_app.clean_up()
+    app1 = ColorPickerExperimentApplication()
+    app2 = ColorPickerExperimentApplication()
+    thread1 = Thread(target=app1.run_experiment, args=("ot2_gamma",))
+    thread2 = Thread(target=app2.run_experiment, args=("ot2_delta",))
+    thread1.start()
+    thread2.start()
