@@ -135,8 +135,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
     def run_experiment(self) -> None:
         """Run the color picker experiment."""
         for iteration in range(self.config.iterations):
-            colors = self.loop(self.opentron, iteration)
-            self.previous_ratios = self.solver.process_results(colors)
+            self.loop(self.opentron, iteration)
         console.print(
             f"[bold green]Target Color:[/bold green] {self.target_color} | [bold blue]Final Mixed Color:[/bold blue] {self.previous_colors[np.argmin(self.previous_ratios)]}"
         )
