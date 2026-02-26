@@ -40,16 +40,16 @@ config:
   rate_limit_short_window: 1
   rate_limit_cleanup_interval: 300
   server_mode: false
-  lab_server_url: http://parker.cels.anl.gov:8000/
+  lab_server_url: null
   run_args: []
   run_kwargs: {}
-  workflow_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/workflows
-  protocol_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/protocols
-  image_directory: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/images
-  experiment_design: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
+  workflow_directory: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/workflows
+  protocol_directory: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/protocols
+  image_directory: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/images
+  experiment_design: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
   pop_size: 4
   well_volume: 275
-  iterations: 1
+  iterations: 4
 config_schema:
   $defs:
     ExperimentDesign:
@@ -557,21 +557,21 @@ config_schema:
       - type: string
       - format: path
         type: string
-      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/workflows
+      default: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/workflows
       title: Workflow Directory
     protocol_directory:
       anyOf:
       - type: string
       - format: path
         type: string
-      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/protocols
+      default: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/protocols
       title: Protocol Directory
     image_directory:
       anyOf:
       - type: string
       - format: path
         type: string
-      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/images
+      default: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/images
       title: Image Directory
     experiment_design:
       anyOf:
@@ -579,7 +579,7 @@ config_schema:
       - type: string
       - format: path
         type: string
-      default: /home/luckierdodge/AD-SDL/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
+      default: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
       title: Experiment Design
     pop_size:
       default: 4

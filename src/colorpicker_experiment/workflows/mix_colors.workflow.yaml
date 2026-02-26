@@ -10,7 +10,6 @@ parameters:
     - key: mixing_protocol_parameters
     - key: opentron_name
     - key: opentron_location
-    - key: opentron_location_approach
   file_inputs:
     - key: protocol_path
 
@@ -49,12 +48,11 @@ steps:
     use_parameters:
       locations: 
         source: opentron_location
-        source_approach: opentron_location_approach
     conditions:
     - condition_type: no_resource_present
-      resource: pf400.rotation_deck_wide
+      location_name: pf400.rotation_deck_wide
     - condition_type: no_resource_present
-      resource: camera_station
+      location_name: camera_station
 
 
 
@@ -84,6 +82,10 @@ steps:
       source: camera_station
       source_approach: camera_station_approach
       target: pf400.rotation_deck
+  - name: Wait 10 seconds
+    action: wait
+    args:
+      seconds: 10
 
   - name: Color Plate from Rotation Deck -> OT2 Deck Pt 1
     node: pf400
@@ -103,5 +105,4 @@ steps:
     use_parameters:
       locations:
         target: opentron_location
-        target_approach: opentron_location_approach
 

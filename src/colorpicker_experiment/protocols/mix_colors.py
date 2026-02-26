@@ -43,13 +43,9 @@ def run(protocol: protocol_api.ProtocolContext):
     deck["9"].set_offset(x=0.00, y=0.00, z=1.50)
 
 
-    deck["10"] = protocol.load_labware("opentrons_96_tiprack_300ul", "10")
+    deck["11"] = protocol.load_labware("opentrons_96_tiprack_1000ul", "11")
 
-
-    deck["11"] = protocol.load_labware("opentrons_96_tiprack_300ul", "11")
-
-
-    pipettes["left"] = protocol.load_instrument("p300_single_gen2", "left", tip_racks=[deck["10"], deck["11"]])
+    pipettes[$pipette_side] = protocol.load_instrument("p1000_single_gen2", $pipette_side, tip_racks=[ deck["11"]])
 
 
     ####################
@@ -61,13 +57,13 @@ def run(protocol: protocol_api.ProtocolContext):
     amounts = $amounts
     tubs = ["5", "6", "8", "9"]
     for index2, tub in enumerate(tubs):
-        pipettes["left"].pick_up_tip()
+        pipettes[$pipette_side].pick_up_tip()
         for index, well in enumerate(wells):
 
-            pipettes["left"].aspirate(amounts[index][index2], deck[tub]["A1"])
+            pipettes[$pipette_side].aspirate(amounts[index][index2], deck[tub]["A1"])
 
-            pipettes["left"].dispense(amounts[index][index2], deck["2"][well])
+            pipettes[$pipette_side].dispense(amounts[index][index2], deck["2"][well])
 
-            pipettes["left"].blow_out()
+            pipettes[$pipette_side].blow_out()
 
-        pipettes["left"].return_tip()
+        pipettes[$pipette_side].return_tip()

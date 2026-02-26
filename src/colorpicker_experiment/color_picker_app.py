@@ -21,7 +21,7 @@ from rich.console import Console
 
 from colorpicker_experiment.bayes_solver import BayesColorSolver
 from colorpicker_experiment.utils import get_colors_from_file
-
+from madsci.client import WorkcellClient, DataClient
 console = Console()
 
 
@@ -58,7 +58,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
     
 
     def __init__(
-        self, opentron: str, config: Optional[ColorPickerConfig] = None
+        self, opentron: str, pipette_side: str, config: Optional[ColorPickerConfig] = None
     ) -> "ColorPickerExperimentApplication":
         """Initialize the color picker experiment application."""
         if config:
@@ -67,8 +67,13 @@ class ColorPickerExperimentApplication(ExperimentApplication):
         super().__init__()
         self.target_color = [randint(0, 255), randint(0, 255), randint(0, 255)]  # noqa: S311
         self.solver = BayesColorSolver(self.config.pop_size, self.target_color)
+        self.pipette_side = "left"
         self.total_wells = []
         self.wells = []
+        self.opentron = opentron
+        self.pipette_side = pipette_side
+        self.workcell_client = WorkcellClient("http://parker.cels.anl.gov:8005")
+        self.data_client = DataClient("http://parker.cels.anl.gov:8003")
         for i in range(9):
             for j in range(1, 13):
                 self.wells.append(ascii_uppercase[i] + str(j))
@@ -81,7 +86,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
 
     def loop(self, opentron: str, iteration: int, inputs: Optional[list[list[float]]] = None) -> None:
         """Run one iteration of the main experiment loop."""
-        self.logger.info(f"Running iteration {iteration} of {self.experiment.run_name}")
+        self.logger.info(f"Running iteration {iteration}")
         # * Get the input volumes for the ot2 to mix in the plate from the bayesian solver, if not provided
         if inputs is None:
             inputs = self.solver.run_iteration(
@@ -90,21 +95,21 @@ class ColorPickerExperimentApplication(ExperimentApplication):
             inputs = (np.array(inputs) * self.config.well_volume).round(3).tolist()
 
         # Track which wells in the plate to create samples in
-        current_wells = self.wells[
-            iteration * self.config.pop_size : (iteration + 1) * self.config.pop_size
-        ]
+        start = iteration * self.config.pop_size
+        end = (iteration + 1) * self.config.pop_size
+        current_wells = self.wells[start:end]
+
         opentron_location = f"{opentron}.deck_2"
-        opentron_location_approach = f"{opentron}.safe_approach"
         # Run the color mixing workflow
         workflow = self.workcell_client.start_workflow(
             workflow_definition=self.mix_colors_workflow,
             json_inputs={
                 "opentron_name": opentron,
                 "opentron_location": opentron_location,
-                "opentron_location_approach": opentron_location_approach,
                 "mixing_protocol_parameters": {
                     "wells": current_wells,
                     "amounts": inputs,
+                    "pipette_side": self.pipette_side,
                 },
             },
             file_inputs={
@@ -130,7 +135,7 @@ class ColorPickerExperimentApplication(ExperimentApplication):
     def run_experiment(self) -> None:
         """Run the color picker experiment."""
         for iteration in range(self.config.iterations):
-            colors = self.loop(iteration, self.opentron)
+            colors = self.loop(self.opentron, iteration)
             self.previous_ratios = self.solver.process_results(colors)
         console.print(
             f"[bold green]Target Color:[/bold green] {self.target_color} | [bold blue]Final Mixed Color:[/bold blue] {self.previous_colors[np.argmin(self.previous_ratios)]}"
@@ -138,8 +143,8 @@ class ColorPickerExperimentApplication(ExperimentApplication):
 
 
 if __name__ == "__main__":
-    app1 = ColorPickerExperimentApplication(opentron="ot2_gamma")
-    app2 = ColorPickerExperimentApplication(opentron="ot2_delta")
+    app1 = ColorPickerExperimentApplication(opentron="ot2_gamma", pipette_side='"left"')
+    app2 = ColorPickerExperimentApplication(opentron="ot2_beta", pipette_side='"right"')
     thread1 = Thread(target=app1.run_experiment)
     thread2 = Thread(target=app2.run_experiment)
     thread1.start()
