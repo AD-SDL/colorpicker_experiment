@@ -1,5 +1,5 @@
 node_name: default.node
-node_id: 01K81DP28N0QNQHKPFEXGT1Z4V
+node_id: 01KJBDVVHEFKQZVBDAM0S47JGA
 node_description: null
 node_type: device
 module_name: color_picker_experiment_application
@@ -45,8 +45,8 @@ config:
   run_kwargs: {}
   workflow_directory: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/workflows
   protocol_directory: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/protocols
-  image_directory: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/images
-  experiment_design: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
+  image_directory: /home/rpl/workspace/colorpicker_experiment/images
+  experiment_design: /home/rpl/workspace/colorpicker_experiment/experiment_design.yaml
   pop_size: 4
   well_volume: 275
   iterations: 4
@@ -571,7 +571,7 @@ config_schema:
       - type: string
       - format: path
         type: string
-      default: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/images
+      default: /home/rpl/workspace/colorpicker_experiment/images
       title: Image Directory
     experiment_design:
       anyOf:
@@ -579,7 +579,7 @@ config_schema:
       - type: string
       - format: path
         type: string
-      default: /home/rpl/workspace/colorpicker_experiment/src/colorpicker_experiment/experiment_design.yaml
+      default: /home/rpl/workspace/colorpicker_experiment/experiment_design.yaml
       title: Experiment Design
     pop_size:
       default: 4

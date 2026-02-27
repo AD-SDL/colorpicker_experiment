@@ -8,58 +8,19 @@ metadata:
 parameters:
   json_inputs:
     - key: mixing_protocol_parameters
+    - key: opentron_name
+    - key: opentron_location
   file_inputs:
     - key: protocol_path
 
 steps:
-  # - name: Color Plate from Camera Station -> OT2 Deck
-  #   node: pf400
-  #   action: transfer
-  #   args:
-  #     source_plate_rotation: "narrow"
-  #     target_plate_rotation: "wide"
-  #   locations:
-  #     source: camera_station
-  #     source_approach: camera_station_approach
-  #     target: ot2_gamma.deck_2
-  #     target_approach: ot2_gamma.safe_approach
-  #     rotation_deck: pf400.rotation_deck
 
-  - name: Color Plate from Camera Station -> Rotation Deck
-    node: pf400
-    action: transfer
-    args:
-      source_plate_rotation: "narrow"
-      target_plate_rotation: "narrow"
-    locations:
-      source: camera_station
-      source_approach: camera_station_approach
-      target: pf400.rotation_deck
-
-  - name: Color Plate from Rotation Deck -> OT2 Deck Pt 1
-    node: pf400
-    action: pick_plate
-    args:
-      source_plate_rotation: "wide"
-      grab_offset: 2.0
-    locations:
-      source: pf400.rotation_deck_wide
-
-  - name: Color Plate from Rotation Deck -> OT2 Deck Pt 2
-    node: pf400
-    action: place_plate
-    args:
-      target_plate_rotation: "wide"
-      grab_offset: -4.0
-    locations:
-      target: ot2_gamma.deck_2
-      target_approach: ot2_gamma.safe_approach
-
+  
   - name: Run OT2 Color Mixing Protocol
     key: run_ot2_mixing_protocol
-    node: ot2_gamma
     action: run_protocol
     use_parameters:
+      node: opentron_name
       args:
         parameters: mixing_protocol_parameters
     files:
@@ -83,9 +44,17 @@ steps:
       source_plate_rotation: "wide"
       target_plate_rotation: "wide"
     locations:
-      source: ot2_gamma.deck_2
-      source_approach: ot2_gamma.safe_approach
       target: pf400.rotation_deck_wide
+    use_parameters:
+      locations: 
+        source: opentron_location
+    conditions:
+    - condition_type: no_resource_present
+      location_name: pf400.rotation_deck_wide
+    - condition_type: no_resource_present
+      location_name: camera_station
+
+
 
   - name: Color Plate from Rotation Deck -> Camera Station
     node: pf400
@@ -103,3 +72,37 @@ steps:
     key: take_picture
     node: camera_1
     action: take_picture
+  - name: Color Plate from Camera Station -> Rotation Deck
+    node: pf400
+    action: transfer
+    args:
+      source_plate_rotation: "narrow"
+      target_plate_rotation: "narrow"
+    locations:
+      source: camera_station
+      source_approach: camera_station_approach
+      target: pf400.rotation_deck
+  - name: Wait 10 seconds
+    action: wait
+    args:
+      seconds: 10
+
+  - name: Color Plate from Rotation Deck -> OT2 Deck Pt 1
+    node: pf400
+    action: pick_plate
+    args:
+      source_plate_rotation: "wide"
+      grab_offset: 2.0
+    locations:
+      source: pf400.rotation_deck_wide
+
+  - name: Color Plate from Rotation Deck -> OT2 Deck Pt 2
+    node: pf400
+    action: place_plate
+    args:
+      target_plate_rotation: "wide"
+      grab_offset: -4.0
+    use_parameters:
+      locations:
+        target: opentron_location
+

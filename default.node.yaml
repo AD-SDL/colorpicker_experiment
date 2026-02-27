@@ -1,0 +1,7 @@
+node_name: default.node
+node_id: 01KJBDVVHEFKQZVBDAM0S47JGA
+node_description: null
+node_type: device
+module_name: color_picker_experiment_application
+module_version: 0.0.1
+capabilities: null
