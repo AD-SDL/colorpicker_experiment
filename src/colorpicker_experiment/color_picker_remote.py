@@ -1,60 +1,44 @@
 """Color Picker Application for Remote Execution using Globus Compute."""
 
-from typing import Optional
+from typing import Any, Optional
 
 from globus_compute_sdk import Executor
 from globus_compute_sdk.serialize import CombinedCode, ComputeSerializer
 
 
 def run_color_picker_experiment(
-    init: bool = False,
-    iteration: int = 0,
-    inputs: Optional[list[list[float]]] = None,
-    cleanup: bool = False,
-) -> list[float]:
-    """Run the color picker experiment using Globus Compute."""
-    from datetime import datetime  # noqa: PLC0415
+    opentron: str = "ot2_gamma",
+    pipette_side: str = "left",
+    iterations: int = 4,
+    lab_server_url: Optional[str] = None,
+) -> dict[str, Any]:
+    """Run the color picker experiment via Globus Compute.
 
-    from madsci.common.types.experiment_types import ExperimentDesign  # noqa: PLC0415
+    Args:
+        opentron: OT-2 node name to use for color mixing.
+        pipette_side: Pipette side to use ("left" or "right").
+        iterations: Number of optimization rounds to run.
+        lab_server_url: URL of the MADSci lab server for service discovery.
 
-    from colorpicker_experiment.color_picker_app import (  # noqa: PLC0415
-        ColorPickerConfig,
-        ColorPickerExperimentApplication,
+    Returns:
+        Experiment results dict with target_color, best_color, and iterations.
+    """
+    from colorpicker_experiment.colorpicker_script import (  # noqa: PLC0415
+        ColorPickerScript,
     )
 
-    experiment_app = ColorPickerExperimentApplication(
-        config=ColorPickerConfig(
-            experiment_design=ExperimentDesign(
-                experiment_name="Color Picker Globus Compute",
-                experiment_description="A demonstration and benchmarking experimental application: mixing colors autonomously. This run is initiated using Globus Compute.",
-            )
-        )
+    app = ColorPickerScript(
+        opentron=opentron,
+        pipette_side=pipette_side,
+        iterations=iterations,
+        lab_server_url=lab_server_url,
     )
-
-    with experiment_app.manage_experiment(
-        run_name=f"Color Picker Globus Run {datetime.now()}",
-        run_description=f"Run for color picker experiment, started using Globus Compute at ~{datetime.now()}",
-    ):
-        result = None
-        try:
-            if init:
-                experiment_app.workcell_client.submit_workflow(
-                    experiment_app.barty_fill_workflow, await_completion=False
-                )
-            result = experiment_app.loop(iteration, inputs)
-        except Exception as e:
-            experiment_app.workcell_client.submit_workflow(
-                experiment_app.barty_cleanup_workflow, await_completion=False
-            )
-            raise e
-        if cleanup:
-            experiment_app.clean_up()
-        return result
+    return app.run()
 
 
 if __name__ == "__main__":
     with Executor(endpoint_id="0de58510-6af5-4731-a924-87bbaa1648fe") as executor:
         executor.serializer = ComputeSerializer(strategy_code=CombinedCode())
-        future = executor.submit(run_color_picker_experiment, init=True, cleanup=True)
+        future = executor.submit(run_color_picker_experiment)
         result = future.result()
-        print(result)  # noqa
+        print(result)  # noqa: T201

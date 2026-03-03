@@ -1,6 +1,6 @@
 [project]
 name = "colorpicker_experiment"
-version = "0.3.0"
+version = "0.4.0"
 description = "The RPL's Color Picker demonstration Autonomous Experiment Application"
 authors = [
     {name = "Ryan D. Lewis", email = "ryan.lewis@anl.gov"},
@@ -8,20 +8,31 @@ authors = [
 ]
 dependencies = [
     "pre-commit>=4.1.0",
-    "madsci.common~=0.6.0",
-    "madsci.client~=0.6.0",
-    "madsci.experiment_application~=0.6.0",
+    "madsci.common==0.7.0rc1",
+    "madsci.client==0.7.0rc1",
+    "madsci.experiment_application==0.7.0rc1",
     "numpy>=2.0.2",
     "colormath>=3.0.0",
     "scikit-learn>=1.6.1",
     "scikit-optimize>=0.10.2",
     "opencv-python>=4.11.0.86",
-    "globus-compute-sdk>=3.11.0"
+    "globus-compute-sdk>=3.11.0",
+    "jupyter>=1.1.1"
 ]
 requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
 
+[project.scripts]
+colorpicker-script = "colorpicker_experiment.colorpicker_script:main"
+colorpicker-tui    = "colorpicker_experiment.colorpicker_tui:main"
+colorpicker-node   = "colorpicker_experiment.colorpicker_node:main"
 
 [tool.pdm]
 distribution = true
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.4",
+    "pre-commit>=4.5.1",
+]

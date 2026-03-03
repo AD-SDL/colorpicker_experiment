@@ -1,27 +1,46 @@
-"""The main colorpicker experiment application."""
+"""The main colorpicker experiment application.
 
-import datetime
+DEPRECATED: This module is deprecated as of colorpicker_experiment v0.4.0.
+Use the modality-specific classes instead:
+
+- :class:`colorpicker_experiment.colorpicker_script.ColorPickerScript` — scripts
+- :class:`colorpicker_experiment.colorpicker_tui.ColorPickerTUI` — interactive TUI
+- :class:`colorpicker_experiment.colorpicker_node.ColorPickerNode` — REST server
+- :class:`colorpicker_experiment.colorpicker_notebook.ColorPickerNotebook` — notebooks
+
+This file will be removed in a future release.
+"""
+
+import warnings
 from pathlib import Path
 from random import randint
 from string import ascii_uppercase
+from threading import Thread
 from typing import Optional, Union
 
 import numpy as np
+from madsci.client import DataClient, WorkcellClient
 from madsci.common.types.base_types import PathLike
 from madsci.common.types.experiment_types import ExperimentDesign
-from madsci.common.types.step_types import StepDefinition
 from madsci.common.types.workflow_types import WorkflowDefinition
 from madsci.experiment_application import ExperimentApplication
 from madsci.experiment_application.experiment_application import (
     ExperimentApplicationConfig,
 )
-from threading import Thread
 from pydantic import Field
 from rich.console import Console
 
 from colorpicker_experiment.bayes_solver import BayesColorSolver
 from colorpicker_experiment.utils import get_colors_from_file
-from madsci.client import WorkcellClient, DataClient
+
+warnings.warn(
+    "color_picker_app.ColorPickerExperimentApplication is deprecated. "
+    "Use ColorPickerScript (or TUI/Node/Notebook variants) from "
+    "colorpicker_experiment.colorpicker_script instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
+
 console = Console()
 
 
@@ -55,10 +74,11 @@ class ColorPickerExperimentApplication(ExperimentApplication):
     previous_ratios = None
     previous_colors = None
 
-    
-
     def __init__(
-        self, opentron: str, pipette_side: str, config: Optional[ColorPickerConfig] = None
+        self,
+        opentron: str,
+        pipette_side: str,
+        config: Optional[ColorPickerConfig] = None,
     ) -> "ColorPickerExperimentApplication":
         """Initialize the color picker experiment application."""
         if config:
@@ -84,7 +104,9 @@ class ColorPickerExperimentApplication(ExperimentApplication):
             self.config.workflow_directory / "rinse_plate.workflow.yaml"
         )
 
-    def loop(self, opentron: str, iteration: int, inputs: Optional[list[list[float]]] = None) -> None:
+    def loop(
+        self, opentron: str, iteration: int, inputs: Optional[list[list[float]]] = None
+    ) -> None:
         """Run one iteration of the main experiment loop."""
         self.logger.info(f"Running iteration {iteration}")
         # * Get the input volumes for the ot2 to mix in the plate from the bayesian solver, if not provided
