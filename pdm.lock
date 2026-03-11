@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:50974644ce4975ef3ec75bd07c7f55ffc0dfde3c70b01cddbbe72d386f849aed"
+content_hash = "sha256:aa39b8d8ddb87b19a60eb314578f16b02364690eda160ed9f01404cfd4825a3c"
 
 [[metadata.targets]]
 requires_python = ">=3.11"
@@ -320,7 +320,7 @@ name = "cfgv"
 version = "3.5.0"
 requires_python = ">=3.10"
 summary = "Validate configuration and produce human readable error messages."
-groups = ["default", "dev"]
+groups = ["dev"]
 files = [
     {file = "cfgv-3.5.0-py2.py3-none-any.whl", hash = "sha256:a8dc6b26ad22ff227d2634a65cb388215ce6cc96bbcc5cfde7641ae87e8dacc0"},
     {file = "cfgv-3.5.0.tar.gz", hash = "sha256:d5b1034354820651caa73ede66a6294d6e95c1b00acc5e9b098e917404669132"},
@@ -592,7 +592,7 @@ files = [
 name = "distlib"
 version = "0.4.0"
 summary = "Distribution utilities"
-groups = ["default", "dev"]
+groups = ["dev"]
 files = [
     {file = "distlib-0.4.0-py2.py3-none-any.whl", hash = "sha256:9659f7d87e46584a30b5780e43ac7a2143098441670ff0a49d5f9034c54a6c16"},
     {file = "distlib-0.4.0.tar.gz", hash = "sha256:feec40075be03a04501a973d81f633735b4b69f98b05450592310c0f401a4e0d"},
@@ -667,7 +667,7 @@ name = "filelock"
 version = "3.25.0"
 requires_python = ">=3.10"
 summary = "A platform independent file lock."
-groups = ["default", "dev"]
+groups = ["dev"]
 files = [
     {file = "filelock-3.25.0-py3-none-any.whl", hash = "sha256:5ccf8069f7948f494968fc0713c10e5c182a9c9d9eef3a636307a20c2490f047"},
     {file = "filelock-3.25.0.tar.gz", hash = "sha256:8f00faf3abf9dc730a1ffe9c354ae5c04e079ab7d3a683b7c32da5dd05f26af3"},
@@ -886,7 +886,7 @@ name = "identify"
 version = "2.6.17"
 requires_python = ">=3.10"
 summary = "File identification library for Python"
-groups = ["default", "dev"]
+groups = ["dev"]
 files = [
     {file = "identify-2.6.17-py2.py3-none-any.whl", hash = "sha256:be5f8412d5ed4b20f2bd41a65f920990bdccaa6a4a18a08f1eefdcd0bdd885f0"},
     {file = "identify-2.6.17.tar.gz", hash = "sha256:f816b0b596b204c9fdf076ded172322f2723cf958d02f9c3587504834c8ff04d"},
@@ -1755,7 +1755,7 @@ name = "nodeenv"
 version = "1.10.0"
 requires_python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 summary = "Node.js virtual environment builder"
-groups = ["default", "dev"]
+groups = ["dev"]
 files = [
     {file = "nodeenv-1.10.0-py2.py3-none-any.whl", hash = "sha256:5bb13e3eed2923615535339b3c620e76779af4cb4c6a90deccc9e36b274d3827"},
     {file = "nodeenv-1.10.0.tar.gz", hash = "sha256:996c191ad80897d076bdfba80a41994c2b47c68e224c542b48feba42ba00f8bb"},
@@ -1999,7 +1999,7 @@ name = "pre-commit"
 version = "4.5.1"
 requires_python = ">=3.10"
 summary = "A framework for managing and maintaining multi-language pre-commit hooks."
-groups = ["default", "dev"]
+groups = ["dev"]
 dependencies = [
     "cfgv>=2.0.0",
     "identify>=1.0.0",
@@ -2462,7 +2462,7 @@ name = "python-discovery"
 version = "1.1.0"
 requires_python = ">=3.8"
 summary = "Python interpreter discovery"
-groups = ["default", "dev"]
+groups = ["dev"]
 dependencies = [
     "filelock>=3.15.4",
     "platformdirs<5,>=4.3.6",
@@ -3611,7 +3611,7 @@ name = "virtualenv"
 version = "21.1.0"
 requires_python = ">=3.8"
 summary = "Virtual Python Environment builder"
-groups = ["default", "dev"]
+groups = ["dev"]
 dependencies = [
     "distlib<1,>=0.3.7",
     "filelock<4,>=3.24.2; python_version >= \"3.10\"",

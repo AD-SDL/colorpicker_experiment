@@ -7,10 +7,9 @@ authors = [
     {name = "Tobias Ginsburg", email = "tginsburg@anl.gov"},
 ]
 dependencies = [
-    "pre-commit>=4.1.0",
-    "madsci.common==0.7.0rc1",
-    "madsci.client==0.7.0rc1",
-    "madsci.experiment_application==0.7.0rc1",
+    "madsci.common~=0.7",
+    "madsci.client~=0.7",
+    "madsci.experiment_application~=0.7",
     "numpy>=2.0.2",
     "colormath>=3.0.0",
     "scikit-learn>=1.6.1",

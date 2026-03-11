@@ -3,16 +3,19 @@
 Provides ColorPickerScript for run-once script execution, including
 single-OT-2 and dual-OT-2 parallel modes via CLI.
 
+All config fields (--opentron, --pipette-side, --iterations, etc.) are
+automatically available as CLI arguments via pydantic-settings.
+
 CLI usage:
     colorpicker-script [--mode single|dual] [--opentron NAME] [--pipette-side SIDE]
 """
 
-import argparse
 import threading
-from typing import Any
+from typing import Any, Literal
 
 from madsci.experiment_application import ExperimentScript
 from madsci.experiment_application.experiment_script import ExperimentScriptConfig
+from pydantic import Field
 
 from colorpicker_experiment.colorpicker_core import (
     COLORPICKER_DESIGN,
@@ -22,7 +25,12 @@ from colorpicker_experiment.colorpicker_core import (
 
 
 class ColorPickerScriptConfig(ColorPickerConfigMixin, ExperimentScriptConfig):
-    """ColorPicker config with script-specific fields (run_args, etc.)."""
+    """ColorPicker config with script-specific fields."""
+
+    mode: Literal["single", "dual"] = Field(
+        default="single",
+        description="Run on a single OT-2 or two OT-2s in parallel threads.",
+    )
 
 
 class ColorPickerScript(ColorPickerMixin, ExperimentScript):
@@ -54,31 +62,11 @@ def main() -> None:
     """Entry point for the colorpicker-script CLI command.
 
     Supports single-OT-2 and dual-OT-2 (parallel threads) modes.
+    All config fields are parsed from CLI args, env vars, and config files
+    automatically via pydantic-settings.
     """
-    parser = argparse.ArgumentParser(
-        description="Run the Color Picker experiment",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    parser.add_argument(
-        "--mode",
-        choices=["single", "dual"],
-        default="single",
-        help="Run on a single OT-2 or two OT-2s in parallel threads.",
-    )
-    parser.add_argument(
-        "--opentron",
-        default=None,
-        help="OT-2 node name (single mode only). Overrides config.",
-    )
-    parser.add_argument(
-        "--pipette-side",
-        default=None,
-        dest="pipette_side",
-        help="Pipette side (single mode only). Overrides config.",
-    )
-    args = parser.parse_args()
-
-    if args.mode == "dual":
+    app = ColorPickerScript()
+    if app.config.mode == "dual":
         app1 = ColorPickerScript(opentron="ot2_gamma", pipette_side="left")
         app2 = ColorPickerScript(opentron="ot2_beta", pipette_side="right")
         t1 = threading.Thread(target=app1.run)
@@ -88,12 +76,7 @@ def main() -> None:
         t1.join()
         t2.join()
     else:
-        kwargs: dict[str, Any] = {}
-        if args.opentron:
-            kwargs["opentron"] = args.opentron
-        if args.pipette_side:
-            kwargs["pipette_side"] = args.pipette_side
-        ColorPickerScript(**kwargs).run()
+        app.run()
 
 
 if __name__ == "__main__":
