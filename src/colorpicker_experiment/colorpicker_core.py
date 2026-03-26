@@ -55,7 +55,7 @@ class ColorPickerConfigMixin:
         description="Number of colors to mix per iteration.",
     )
     well_volume: float = Field(
-        default=275.0,
+        default=200.0,
         gt=0,
         title="Well Volume",
         description="Volume in microliters to fill each well.",
@@ -274,8 +274,8 @@ class ColorPickerMixin:
                 self._ensure_reservoirs_filled(self.config.reservoir_fill_level)
                 self.loop(iteration)
         finally:
-            self._rinse_plate()
             self._drain_all_reservoirs()
+            self._rinse_plate()
         best_idx = int(
             np.argmin(
                 self.solver._grade_population(self.previous_colors, self.target_color)
