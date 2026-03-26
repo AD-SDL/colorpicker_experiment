@@ -159,6 +159,22 @@ class ColorPickerMixin:
         )
         self.workcell_client.start_workflow(workflow, await_completion=True)  # type: ignore[attr-defined]
 
+    def _rinse_plate(self) -> None:
+        """Run the rinse plate workflow to clean used wells."""
+        if not self.total_wells:
+            return
+        self.workcell_client.start_workflow(  # type: ignore[attr-defined]
+            workflow_definition=self.rinse_plate_workflow,
+            json_inputs={
+                "rinse_protocol_parameters": {
+                    "wells": self.total_wells,
+                },
+            },
+            file_inputs={
+                "protocol_path": str(self.config.protocol_directory / "rinse_plate.py"),
+            },
+        )
+
     def _drain_all_reservoirs(self) -> None:
         """Drain all target reservoirs completely. Skips if not using ot2_gamma."""
         if self.opentron != "ot2_gamma":
@@ -258,6 +274,7 @@ class ColorPickerMixin:
                 self._ensure_reservoirs_filled(self.config.reservoir_fill_level)
                 self.loop(iteration)
         finally:
+            self._rinse_plate()
             self._drain_all_reservoirs()
         best_idx = int(
             np.argmin(
