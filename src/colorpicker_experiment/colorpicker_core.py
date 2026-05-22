@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, Optional
 import numpy as np
 from madsci.common.types.base_types import PathLike
 from madsci.common.types.experiment_types import ExperimentDesign
-from madsci.common.types.workflow_types import WorkflowDefinition
+from madsci.common.types.workflow_types import StepDefinition, WorkflowDefinition
 from madsci.experiment_application.experiment_base import ExperimentBaseConfig
 from pydantic import Field
 
@@ -55,7 +55,7 @@ class ColorPickerConfigMixin:
         description="Number of colors to mix per iteration.",
     )
     well_volume: float = Field(
-        default=275.0,
+        default=200.0,
         gt=0,
         title="Well Volume",
         description="Volume in microliters to fill each well.",
@@ -75,6 +75,12 @@ class ColorPickerConfigMixin:
         default=(Path(__file__).parent / "protocols").resolve(),
         title="Protocol Directory",
         description="Directory containing OT-2 protocol files.",
+    )
+    reservoir_fill_level: float = Field(
+        default=100.0,
+        gt=0,
+        title="Reservoir Fill Level",
+        description="Target fill level for ink reservoirs before mixing.",
     )
 
 
@@ -135,6 +141,56 @@ class ColorPickerMixin:
         self.previous_ratios: Optional[list[list[float]]] = None
         self.previous_colors: Optional[list[list[float]]] = None
         self.total_wells: list[str] = []
+
+    def _ensure_reservoirs_filled(self, target_level: float) -> None:
+        """Fill target reservoirs to the desired level. Skips if not using ot2_gamma."""
+        if self.opentron != "ot2_gamma":
+            return
+        workflow = WorkflowDefinition(
+            name="Fill All Reservoirs to Target",
+            steps=[
+                StepDefinition(
+                    name="Fill All Reservoirs to Target",
+                    node="barty",
+                    action="fill_all_to_target",
+                    args={"target_level": target_level},
+                )
+            ],
+        )
+        self.workcell_client.start_workflow(workflow, await_completion=True)  # type: ignore[attr-defined]
+
+    def _rinse_plate(self) -> None:
+        """Run the rinse plate workflow to clean used wells."""
+        if not self.total_wells:
+            return
+        self.workcell_client.start_workflow(  # type: ignore[attr-defined]
+            workflow_definition=self.rinse_plate_workflow,
+            json_inputs={
+                "rinse_protocol_parameters": {
+                    "wells": self.total_wells,
+                },
+            },
+            file_inputs={
+                "protocol_path": str(self.config.protocol_directory / "rinse_plate.py"),
+            },
+        )
+
+    def _drain_all_reservoirs(self) -> None:
+        """Drain all target reservoirs completely. Skips if not using ot2_gamma."""
+        if self.opentron != "ot2_gamma":
+            return
+        workflow = WorkflowDefinition(
+            name="Drain All Reservoirs",
+            steps=[
+                StepDefinition(
+                    name="Drain All Reservoirs",
+                    node="barty",
+                    action="drain_all_to_empty",
+                    args={},
+                )
+            ],
+        )
+        self.workcell_client.start_workflow(workflow, await_completion=False)  # type: ignore[attr-defined]
 
     def loop(
         self,
@@ -212,9 +268,14 @@ class ColorPickerMixin:
         """
         self._initialize_run(opentron, pipette_side)
         n = iterations or self.config.iterations
-        for iteration in range(n):
-            self.check_experiment_status()  # type: ignore[attr-defined]
-            self.loop(iteration)
+        try:
+            for iteration in range(n):
+                self.check_experiment_status()  # type: ignore[attr-defined]
+                self._ensure_reservoirs_filled(self.config.reservoir_fill_level)
+                self.loop(iteration)
+        finally:
+            self._drain_all_reservoirs()
+            self._rinse_plate()
         best_idx = int(
             np.argmin(
                 self.solver._grade_population(self.previous_colors, self.target_color)

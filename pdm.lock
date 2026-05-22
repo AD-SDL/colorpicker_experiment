@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:aa39b8d8ddb87b19a60eb314578f16b02364690eda160ed9f01404cfd4825a3c"
+content_hash = "sha256:a09782bab12f6672d3c5ab3c466d0b1b10c66184ef29770ad70eb1af125e4b15"
 
 [[metadata.targets]]
 requires_python = ">=3.11"
@@ -1382,7 +1382,7 @@ files = [
 
 [[package]]
 name = "madsci-client"
-version = "0.7.0rc1"
+version = "0.8.0"
 requires_python = ">=3.10.0"
 summary = "The Modular Autonomous Discovery for Science (MADSci) Python Clients."
 groups = ["default"]
@@ -1397,13 +1397,13 @@ dependencies = [
     "trogon>=0.6.0",
 ]
 files = [
-    {file = "madsci_client-0.7.0rc1-py3-none-any.whl", hash = "sha256:043193f976b691b1dada2b2f31782338157a95fbf0c541a18f35585f266fda62"},
-    {file = "madsci_client-0.7.0rc1.tar.gz", hash = "sha256:c2a9fd1cf470b1d24f3f0372f309b55d953cda1335471e9cb342ec35eb3d9e2a"},
+    {file = "madsci_client-0.8.0-py3-none-any.whl", hash = "sha256:a8619e9375d4e2effe7934da8e7a447c43bd9e2be63f90fbd1ec5096b781639e"},
+    {file = "madsci_client-0.8.0.tar.gz", hash = "sha256:db6ce05d5e9cf7d9e85844e1eb825962842784c82424bf2097eb3258a14bf9eb"},
 ]
 
 [[package]]
 name = "madsci-common"
-version = "0.7.0rc1"
+version = "0.8.0"
 requires_python = ">=3.10.0"
 summary = "The Modular Autonomous Discovery for Science (MADSci) Common Definitions and Utilities."
 groups = ["default"]
@@ -1434,13 +1434,13 @@ dependencies = [
     "uvicorn[standard]>=0.32.0",
 ]
 files = [
-    {file = "madsci_common-0.7.0rc1-py3-none-any.whl", hash = "sha256:6fd3f71f2105c6861d0f81175a9b99991b5c64b7c7920e2ca585c2170bff1069"},
-    {file = "madsci_common-0.7.0rc1.tar.gz", hash = "sha256:541d2b9da128c6fc67d9c3ba1a8a191900a6bafa24791ff3d6d2452576f84d3d"},
+    {file = "madsci_common-0.8.0-py3-none-any.whl", hash = "sha256:f87d11b2554d242a33d6666faccd935f95e19d5454ce36a75fc4785e82e1ea6d"},
+    {file = "madsci_common-0.8.0.tar.gz", hash = "sha256:26a4eccbf0194327e3c1fba9464e751346334e919b86a9d029ee4196f9800676"},
 ]
 
 [[package]]
 name = "madsci-experiment-application"
-version = "0.7.0rc1"
+version = "0.8.0"
 requires_python = ">=3.10.0"
 summary = "The Modular Autonomous Discovery for Science (MADSci) Experiment Application framework."
 groups = ["default"]
@@ -1453,8 +1453,8 @@ dependencies = [
     "typing-extensions>=4.0.0",
 ]
 files = [
-    {file = "madsci_experiment_application-0.7.0rc1-py3-none-any.whl", hash = "sha256:84bd38b95eb48a9b75fd04d99903edbb7da903cd7a7a2bf20eecbb4f85d28752"},
-    {file = "madsci_experiment_application-0.7.0rc1.tar.gz", hash = "sha256:9b835999350d67aae1d629ec9c140f254ff46664fc980685dd8fe393ab865e15"},
+    {file = "madsci_experiment_application-0.8.0-py3-none-any.whl", hash = "sha256:e4dbbe0c19309c60046465f22d1fff4fd45129ab11bbfe1aba0ddcbb8f506dfa"},
+    {file = "madsci_experiment_application-0.8.0.tar.gz", hash = "sha256:fe9d5657e9d4a08245f44f363b8279e98ba60b26e0a2774aa0d31eb32c74be29"},
 ]
 
 [[package]]

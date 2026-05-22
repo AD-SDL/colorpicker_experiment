@@ -72,6 +72,7 @@ steps:
     key: take_picture
     node: camera_1
     action: take_picture
+
   - name: Color Plate from Camera Station -> Rotation Deck
     node: pf400
     action: transfer

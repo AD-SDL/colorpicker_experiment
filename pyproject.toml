@@ -7,9 +7,9 @@ authors = [
     {name = "Tobias Ginsburg", email = "tginsburg@anl.gov"},
 ]
 dependencies = [
-    "madsci.common~=0.7",
-    "madsci.client~=0.7",
-    "madsci.experiment_application~=0.7",
+    "madsci.common~=0.8.0",
+    "madsci.client~=0.8.0",
+    "madsci.experiment_application~=0.8.0",
     "numpy>=2.0.2",
     "colormath>=3.0.0",
     "scikit-learn>=1.6.1",
@@ -29,6 +29,11 @@ colorpicker-node   = "colorpicker_experiment.colorpicker_node:main"
 
 [tool.pdm]
 distribution = true
+
+[tool.pdm.scripts]
+colorpicker-script = {call = "colorpicker_experiment.colorpicker_script:main"}
+colorpicker-tui = {call = "colorpicker_experiment.colorpicker_tui:main"}
+colorpicker-node = {call = "colorpicker_experiment.colorpicker_node:main"}
 
 [dependency-groups]
 dev = [
